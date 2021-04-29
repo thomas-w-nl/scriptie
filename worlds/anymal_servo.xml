@@ -1,0 +1,179 @@
+<mujoco model="anymal">
+    <compiler angle="radian" meshdir="/home/thomas/uva/scriptie/walking/ant/worlds/anymal/meshes/" />
+    <size njmax="500" nconmax="200" />
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="1 1 1" rgb2="0 0 0" width="100" height="600" />
+        <texture type="cube" name="texgeom" builtin="flat" mark="cross" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" markrgb="1 1 1" width="127" height="762" />
+        <texture type="2d" name="texplane" builtin="checker" rgb1="0 0 0" rgb2="0.8 0.8 0.8" width="100" height="100" />
+        <material name="MatPlane" texture="texplane" texrepeat="60 60" specular="1" shininess="1" reflectance="0.5" />
+        <material name="geom" texture="texgeom" texuniform="true" />
+<!--        <hfield name="terrain_hfield" file="generated_terrain.png" size="50 50 {{HFIELD_HEIGHT}} 1"/>-->
+
+    </asset>
+    <worldbody>
+<!--        <geom conaffinity="1" condim="3" material="MatPlane" hfield="terrain_hfield" name="terrain"-->
+<!--              pos="{{HFIELD_XOFFSET}} 0 0" rgba="0.5 0.5 0.5 1" euler="0 0 0" type="hfield"/>-->
+    <geom conaffinity="1" condim="3" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="40 40 40" type="plane"/>
+
+
+        <light pos="0 0 1.3" dir="0 0 -1" directional="true" cutoff="100" exponent="1" diffuse="1 1 1" specular="0.1 0.1 0.1" />
+        <body name="torso" pos="0 0 {{START_HEIGHT}}">
+            <camera name="track" mode="trackcom" pos="0 -3 0.3" xyaxes="1 0 0 0 0 1"/>
+            <site name="torso_site" type="sphere" pos="0 0 0" size="0.03"/>
+            <site name="rangefinder_torso" type="sphere" pos="0 0 -0.1" size="0.015" euler="180 0 0" rgba="0 0 1 .7"/>
+
+            <inertial pos="0 0 0.0644886" quat="0 0.707107 0 0.707107" mass="39.6938" diaginertia="1.31111 1.29715 0.494963" />
+            <joint name="root" type="free" margin="0.01" />
+            <geom size="0.2655 0.135 0.12" pos="0 0 0.08" type="box" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.05 0.05" pos="0.227 0.116 0" quat="0.707107 0 0.707107 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.05 0.05" pos="0.227 -0.116 0" quat="0.707107 0 0.707107 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.05 0.05" pos="-0.227 0.116 0" quat="0.707107 0 0.707107 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.05 0.05" pos="-0.227 -0.116 0" quat="0.707107 0 0.707107 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.05 0.05 0.035" pos="0.2155 0 -0.09" type="box" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.05 0.05 0.035" pos="-0.2155 0 -0.09" type="box" rgba="0.7 0.7 0.7 1" />
+            <geom size="0.2655 0.01 0.035" pos="0 0 -0.09" type="box" rgba="0.7 0.7 0.7 1" />
+            <body name="base_inertia" pos="0 0 0">
+                <inertial pos="-0.00196056 -0.00141322 0.0502071" quat="0.522436 0.475114 0.521014 0.479449" mass="16.7935" diaginertia="0.639559 0.624031 0.217374" />
+            </body>
+            <body name="LF_HIP" pos="0.277 0.116 0">
+                <inertial pos="0.0645163 -0.0037871 -0.000152184" quat="0.996866 0.0379822 0.0252009 -0.0646548" mass="1.42462" diaginertia="0.00243341 0.00230249 0.00197758" />
+                <joint name="LF_HAA" pos="0 0 0" axis="1 0 0" limited="true" range="-9.42 9.42" />
+                <geom size="0.08 0.05" pos="0.0635 -0.009 0" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <geom size="0.045 0.015" pos="0.0635 -0.074 0" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <body name="LF_THIGH" pos="0.0635 0.041 0">
+                    <inertial pos="-0.00389797 0.0542266 -0.214583" quat="0.74395 -0.0633414 0.0362707 0.664237" mass="1.63498" diaginertia="0.0122697 0.0120427 0.00228302" />
+                    <joint name="LF_HFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                    <geom size="0.04 0.02 0.125" pos="0 0.035 -0.125" quat="0.997373 0.0724365 0 0" type="box" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.06 0.06" pos="0 0.069 -0.25" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.066 0.06" pos="0 -0.005 0" quat="0.654029 0.75647 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <body name="LF_SHANK" pos="0 0.109 -0.25">
+                        <inertial pos="0.0308169 -0.00461723 0.000893126" quat="0.466209 0.472113 0.54007 0.517767" mass="0.207204" diaginertia="0.000683115 0.000545293 0.000203383" />
+                        <joint name="LF_KFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                        <geom size="0.04 0.035 0.065" pos="0.065 -0.015 0.01" quat="0.707107 0 0.707107 0" type="box" rgba="0.7 0.7 0.7 1" />
+                        <body name="LF_ADAPTER" pos="0.1 -0.02 0">
+                            <inertial pos="-8.66e-10 -1.472e-09 -0.244346" quat="0.707107 0 0 0.707107" mass="0.140171" diaginertia="0.00159939 0.00159939 5.44232e-05" />
+                            <geom size="0.015 0.160625" pos="0 0 -0.160625" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                            <body name="LF_FOOT" pos="0 0 -0.32125">
+                                <inertial pos="0 0 0.02325" mass="0.124788" diaginertia="4.79686e-05 4.79686e-05 4.79686e-05" />
+                                <geom size="0.031" pos="0 0 0.02325" />
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="RF_HIP" pos="0.277 -0.116 0">
+                <inertial pos="0.0645163 0.0037871 -0.000152184" quat="0.996866 -0.0379822 0.0252009 0.0646548" mass="1.42462" diaginertia="0.00243341 0.00230249 0.00197758" />
+                <joint name="RF_HAA" pos="0 0 0" axis="1 0 0" limited="true" range="-9.42 9.42" />
+                <geom size="0.08 0.05" pos="0.0635 0.009 0" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <geom size="0.045 0.015" pos="0.0635 0.074 0" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <body name="RF_THIGH" pos="0.0635 -0.041 0">
+                    <inertial pos="-0.00389797 -0.0542266 -0.214583" quat="0.664237 0.0362707 -0.0633414 0.74395" mass="1.63498" diaginertia="0.0122697 0.0120427 0.00228302" />
+                    <joint name="RF_HFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                    <geom size="0.04 0.02 0.125" pos="0 -0.035 -0.125" quat="0.997373 -0.0724365 0 0" type="box" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.06 0.06" pos="0 -0.069 -0.25" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.066 0.06" pos="0 0.005 0" quat="0.654029 -0.75647 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <body name="RF_SHANK" pos="0 -0.109 -0.25">
+                        <inertial pos="0.0308169 0.00461723 0.000893126" quat="0.517767 0.54007 0.472113 0.466209" mass="0.207204" diaginertia="0.000683115 0.000545293 0.000203383" />
+                        <joint name="RF_KFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                        <geom size="0.04 0.035 0.065" pos="0.065 0.015 0.01" quat="0.707107 0 0.707107 0" type="box" rgba="0.7 0.7 0.7 1" />
+                        <body name="RF_ADAPTER" pos="0.1 0.02 0">
+                            <inertial pos="-8.66e-10 -1.472e-09 -0.244346" quat="0.707107 0 0 0.707107" mass="0.140171" diaginertia="0.00159939 0.00159939 5.44232e-05" />
+                            <geom size="0.015 0.160625" pos="0 0 -0.160625" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                            <body name="RF_FOOT" pos="0 0 -0.32125">
+                                <inertial pos="0 0 0.02325" mass="0.124788" diaginertia="4.79686e-05 4.79686e-05 4.79686e-05" />
+                                <geom size="0.031" pos="0 0 0.02325" />
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="LH_HIP" pos="-0.277 0.116 0">
+                <inertial pos="-0.0645163 -0.0037871 -0.000152184" quat="0.996866 0.0379822 -0.0252009 0.0646548" mass="1.42462" diaginertia="0.00243341 0.00230249 0.00197758" />
+                <joint name="LH_HAA" pos="0 0 0" axis="1 0 0" limited="true" range="-9.42 9.42" />
+                <geom size="0.08 0.05" pos="-0.0635 -0.009 0" quat="0.707107 -0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <geom size="0.045 0.015" pos="-0.0635 -0.074 0" quat="0.707107 -0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <body name="LH_THIGH" pos="-0.0635 0.041 0">
+                    <inertial pos="0.00389797 0.0542266 -0.214583" quat="0.664237 -0.0362707 0.0633414 0.74395" mass="1.63498" diaginertia="0.0122697 0.0120427 0.00228302" />
+                    <joint name="LH_HFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                    <geom size="0.04 0.02 0.125" pos="0 0.035 -0.125" quat="0.997373 0.0724365 0 0" type="box" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.06 0.06" pos="0 0.069 -0.25" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.066 0.06" pos="0 -0.005 0" quat="0.654029 0.75647 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <body name="LH_SHANK" pos="0 0.109 -0.25">
+                        <inertial pos="-0.0308169 -0.00461723 0.000893126" quat="0.54007 0.517767 0.466209 0.472113" mass="0.207204" diaginertia="0.000683115 0.000545293 0.000203383" />
+                        <joint name="LH_KFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                        <geom size="0.04 0.035 0.065" pos="-0.065 -0.015 0.01" quat="0.707107 0 0.707107 0" type="box" rgba="0.7 0.7 0.7 1" />
+                        <body name="LH_ADAPTER" pos="-0.1 -0.02 0">
+                            <inertial pos="-8.66e-10 -1.472e-09 -0.244346" quat="0.707107 0 0 0.707107" mass="0.140171" diaginertia="0.00159939 0.00159939 5.44232e-05" />
+                            <geom size="0.015 0.160625" pos="0 0 -0.160625" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                            <body name="LH_FOOT" pos="0 0 -0.32125">
+                                <inertial pos="0 0 0.02325" mass="0.124788" diaginertia="4.79686e-05 4.79686e-05 4.79686e-05" />
+                                <geom size="0.031" pos="0 0 0.02325" />
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="RH_HIP" pos="-0.277 -0.116 0">
+                <inertial pos="-0.0645163 0.0037871 -0.000152184" quat="0.996866 -0.0379822 -0.0252009 -0.0646548" mass="1.42462" diaginertia="0.00243341 0.00230249 0.00197758" />
+                <joint name="RH_HAA" pos="0 0 0" axis="1 0 0" limited="true" range="-9.42 9.42" />
+                <geom size="0.08 0.05" pos="-0.0635 0.009 0" quat="0.707107 -0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <geom size="0.045 0.015" pos="-0.0635 0.074 0" quat="0.707107 -0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                <body name="RH_THIGH" pos="-0.0635 -0.041 0">
+                    <inertial pos="0.00389797 -0.0542266 -0.214583" quat="0.74395 0.0633414 -0.0362707 0.664237" mass="1.63498" diaginertia="0.0122697 0.0120427 0.00228302" />
+                    <joint name="RH_HFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                    <geom size="0.04 0.02 0.125" pos="0 -0.035 -0.125" quat="0.997373 -0.0724365 0 0" type="box" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.06 0.06" pos="0 -0.069 -0.25" quat="0.707107 0.707107 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <geom size="0.066 0.06" pos="0 0.005 0" quat="0.654029 -0.75647 0 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                    <body name="RH_SHANK" pos="0 -0.109 -0.25">
+                        <inertial pos="-0.0308169 0.00461723 0.000893126" quat="0.472113 0.466209 0.517767 0.54007" mass="0.207204" diaginertia="0.000683115 0.000545293 0.000203383" />
+                        <joint name="RH_KFE" pos="0 0 0" axis="0 1 0" limited="true" range="-9.42 9.42" />
+                        <geom size="0.04 0.035 0.065" pos="-0.065 0.015 0.01" quat="0.707107 0 0.707107 0" type="box" rgba="0.7 0.7 0.7 1" />
+                        <body name="RH_ADAPTER" pos="-0.1 0.02 0">
+                            <inertial pos="-8.66e-10 -1.472e-09 -0.244346" quat="0.707107 0 0 0.707107" mass="0.140171" diaginertia="0.00159939 0.00159939 5.44232e-05" />
+                            <geom size="0.015 0.160625" pos="0 0 -0.160625" type="cylinder" rgba="0.7 0.7 0.7 1" />
+                            <body name="RH_FOOT" pos="0 0 -0.32125">
+                                <inertial pos="0 0 0.02325" mass="0.124788" diaginertia="4.79686e-05 4.79686e-05 4.79686e-05" />
+                                <geom size="0.031" pos="0 0 0.02325" />
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    <actuator>
+        <position joint="LF_HAA" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="LF_HFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="LF_KFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="RF_HAA" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="RF_HFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="RF_KFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="LH_HAA" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="LH_HFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="LH_KFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="RH_HAA" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="RH_HFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+        <position joint="RH_KFE" ctrllimited="true" ctrlrange="-4 4" gear="5" kp="50" />
+    </actuator>
+
+<!--        <actuator>-->
+    <!--        <position joint="LF_HAA" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="LF_HFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="LF_KFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="RF_HAA" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="RF_HFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="RF_KFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="LH_HAA" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="LH_HFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="LH_KFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="RH_HAA" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="RH_HFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--        <position joint="RH_KFE" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->
+    <!--    </actuator>-->
+    <sensor>
+        <velocimeter name="sensor_velocimeter" site="torso_site"/>
+        <gyro name="sensor_gyro" site="torso_site"/>
+        <accelerometer name="sensor_accel" site="torso_site"/>
+        <rangefinder name="sensor_rangefinder_torso" site="rangefinder_torso"/>
+    </sensor>
+</mujoco>
