@@ -1,0 +1,8 @@
+# April 29
+Setting up a new PC
+
+sudo apt install libopenmpi-dev swig libosmesa6-dev libgl1-mesa-glx libglfw3
+
+Add to .bashrc
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/twiggers/.mujoco/mjpro150/bin
+

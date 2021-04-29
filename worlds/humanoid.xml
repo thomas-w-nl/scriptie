@@ -42,12 +42,12 @@
         <light mode='targetbodycom' target='torso' directional='false' diffuse='.8 .8 .8' specular='0.3 0.3 0.3'
                pos='0 0 4.0' dir='0 0 -1'/>
 
-        <camera name='targeting' pos='1 1 2' mode='targetbodycom' target='torso'/>
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1"/>
+
 
         <body name='torso' pos='0 0 {{START_HEIGHT}}'>
 
-            <camera name='tracking' pos='1 1 2' zaxis="1 2 3" mode='trackcom'/>
-<!--            TODO MAYBE PLACE AT PELVIS?-->
+            <camera name='tracking' pos='0 -4 0' zaxis="1 2 3" mode='trackcom'/>
             <site name="rangefinder_torso" type="sphere" pos="0 0 -0.2" size="0.03" euler="180 0 0" rgba="0 0 1 .7"/>
             <site name="torso_site" type="sphere" pos="0 0 0" size="0.03" euler="0 0 0" rgba="0 0 1 .7"/>
 

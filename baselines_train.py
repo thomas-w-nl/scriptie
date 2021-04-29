@@ -2,14 +2,7 @@
 ### V2
 ###
 
-import os
-
-import gym
-import numpy as np
-
 from stable_baselines3 import SAC, PPO
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.sac import MlpPolicy
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.monitor import Monitor
 
@@ -105,9 +98,13 @@ if __name__ == '__main__':
 
     # env = ANYMalStandupEnv(experiment_conf)
 
+    # env = HumanoidEnv(experiment_conf)
     # env = HumanoidEnvGym(experiment_conf)
+
     # env = InvertedPendulumEnvR(experiment_conf)
+
     env = BipedalWalkerEnv(experiment_conf)
+
 
 
     name = f"{config.algo}_{env.__class__.__name__}_{'cheat_' if config.cheat else ''}{terrain}_{config.name}"
@@ -118,6 +115,9 @@ if __name__ == '__main__':
     log_dir = "/tmp/gym/" + name + "/"
     os.makedirs(log_dir, exist_ok=True)
     env = Monitor(env, log_dir, info_keywords=("checkpoints", "avg_speed"))
+
+    # env = DummyVecEnv([lambda:env])
+    # env = VecNormalize(env)
 
     seed = np.random.randint(0, 200)
 
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
                  use_sde=True,
                  seed=seed,
-                 device="cuda"
+                 device="cuda",
                  )
 
     if config.checkpoint:

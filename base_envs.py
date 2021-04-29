@@ -2,30 +2,28 @@
 ### V2
 ###
 
-import collections
 import os
 import random
+import socket
+from abc import ABC
 
-import ray
-import gym
-import scipy
 from PIL import Image
-from gym.envs.mujoco.mujoco_env import DEFAULT_SIZE
 from noise import pnoise2
-import mujoco_py
-from ray import tune
-from ray.rllib.agents.ppo import PPOTrainer, DDPPOTrainer, APPOTrainer
+import gym
 
-from gym.envs.mujoco import AntEnv, HumanoidEnv, MujocoEnv
-from mujoco_py.generated import const
-from ray.rllib.agents.sac import SACTrainer
+hostname = socket.gethostname()
+if hostname == "robolabws4":
+    MujocoEnv = ABC
+else:
+    import mujoco_py
+    from mujoco_py.generated import const
+    from gym.envs.mujoco import MujocoEnv
+
 
 from scipy.spatial.transform import Rotation as R
 from scipy.signal import convolve2d
 import numpy as np
 from gym import utils
-from gym.envs.mujoco import mujoco_env
-import pathlib
 
 WORKSTATION = not os.getlogin() == "thomas"
 
@@ -120,9 +118,9 @@ class TerrainEnv(MujocoEnvFromString):
         # TODO Clean up path system
         if WORKSTATION:
             print("warn: NotImplementedError(Fix path system)")
-            root = "/home/twiggers/ant/v2"
+            root = "/home/twiggers/walking"
         else:
-            root = "/home/thomas/uva/scriptie/walking/ant/v2"
+            root = "/home/thomas/uva/scriptie/versie 3"
 
         mean_height_start = self.generate_terrain(root)
 
