@@ -29,6 +29,8 @@ class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
         super().__init__()
         self.hardcore = config.get("hardcore", False)
 
+        self.time = 0
+
         # clip lidar for non cheating agent
         if not self.cheat:
             high = np.array([np.inf] * 14)
@@ -46,12 +48,17 @@ class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
         if self.do_render:
             self.render()
 
+        self.time += 1
+        if self.time > 2500:
+            done = True
+
         # clip lidar for non cheating agent
         if not self.cheat:
             ob = ob[:14]
         return ob, reward, done, info
 
     def reset(self):
+        self.time = 0
         self.velocities = []
         return super().reset()
 
@@ -137,6 +144,7 @@ if hostname != "robolabws4":
             obs, reward, done, info = super().step(a)
 
             vel_vec = self.get_velocity()
+            print(vel_vec[0])
 
             # reached = self.update_target()
             #

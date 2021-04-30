@@ -47,7 +47,7 @@
 
         <body name='torso' pos='0 0 {{START_HEIGHT}}'>
 
-            <camera name='tracking' pos='0 -4 0' zaxis="1 2 3" mode='trackcom'/>
+            <camera name="track" mode="trackcom" pos="0 -6 0" xyaxes="1 0 0 0 0 1"/>
             <site name="rangefinder_torso" type="sphere" pos="0 0 -0.2" size="0.03" euler="180 0 0" rgba="0 0 1 .7"/>
             <site name="torso_site" type="sphere" pos="0 0 0" size="0.03" euler="0 0 0" rgba="0 0 1 .7"/>
 

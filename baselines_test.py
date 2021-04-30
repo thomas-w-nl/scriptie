@@ -7,19 +7,24 @@ from stable_baselines3 import SAC, PPO
 from envs import *
 import gym
 
+model_path = "models/old/sac_BipedalWalkerEnv_cheat_flat_baseline1/best_model.zip"
+model = SAC.load(model_path)
+
+
 experiment_conf = {"render": True,
                    "terrain": "flat",
-                   # "cheat": True,
+                   "cheat": "cheat" in model_path,
                    "perturb_magnitude": 1,
+                   "hardcore": False,
                    "desc": ""}
 
 # env = ANYMalStandupEnv(experiment_conf)
-env = BipedalWalkerEnv(expezriment_conf)
+env = BipedalWalkerEnv(experiment_conf)
+# env = HumanoidEnv(experiment_conf)
 # env = HumanoidEnvGym(experiment_conf)
 env.render()
 # env = InvertedPendulumEnvR(experiment_conf)
 
-model = SAC.load("models/sac_TimeLimit_flat_baseline_hman_orig.zip")
 
 scores = []
 for i in range(100):

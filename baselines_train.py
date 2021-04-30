@@ -98,12 +98,12 @@ if __name__ == '__main__':
 
     # env = ANYMalStandupEnv(experiment_conf)
 
-    env = HumanoidEnv(experiment_conf)
+    # env = HumanoidEnv(experiment_conf)
     # env = HumanoidEnvGym(experiment_conf)
 
     # env = InvertedPendulumEnvR(experiment_conf)
 
-    # env = BipedalWalkerEnv(experiment_conf)
+    env = BipedalWalkerEnv(experiment_conf)
 
 
 
