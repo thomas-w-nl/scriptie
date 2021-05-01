@@ -134,6 +134,11 @@ if __name__ == '__main__':
                  use_sde=True,
                  seed=seed,
                  device="cuda",
+                 ent_coef=0.005,
+                 tau=0.01,
+                 learning_starts=10000,
+                 learning_rate="lin_7.3e-4",
+                 policy_kwargs=dict(net_arch=[400, 300])
                  )
 
     if config.checkpoint:

@@ -7,7 +7,7 @@ from stable_baselines3 import SAC, PPO
 from envs import *
 import gym
 
-model_path = "models/old/sac_BipedalWalkerEnv_cheat_flat_baseline1/best_model.zip"
+model_path = "models/ws4/sac_BipedalWalkerEnv_hardcore_baseline2/best_model.zip"
 model = SAC.load(model_path)
 
 
@@ -15,7 +15,7 @@ experiment_conf = {"render": True,
                    "terrain": "flat",
                    "cheat": "cheat" in model_path,
                    "perturb_magnitude": 1,
-                   "hardcore": False,
+                   "hardcore": True,
                    "desc": ""}
 
 # env = ANYMalStandupEnv(experiment_conf)
