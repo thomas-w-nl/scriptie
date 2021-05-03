@@ -1,7 +1,7 @@
 ###
 ### V2
 ###
-
+import stable_baselines3
 from stable_baselines3 import SAC, PPO
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.monitor import Monitor
@@ -67,6 +67,19 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         return True
 
 
+def linear_schedule(initial_value: float):
+    def func(progress_remaining: float) -> float:
+        """
+        Progress will decrease from 1 (beginning) to 0.
+
+        :param progress_remaining:
+        :return: current learning rate
+        """
+        return progress_remaining * initial_value
+
+    return func
+
+
 if __name__ == '__main__':
     import argparse
 
@@ -88,7 +101,6 @@ if __name__ == '__main__':
 
     hardcore = config.terrain == "hardcore"
 
-
     experiment_conf = {"render": render,
                        "terrain": "flat",
                        "hardcore": hardcore,
@@ -104,8 +116,6 @@ if __name__ == '__main__':
     # env = InvertedPendulumEnvR(experiment_conf)
 
     env = BipedalWalkerEnv(experiment_conf)
-
-
 
     name = f"{config.algo}_{env.__class__.__name__}_{'cheat_' if config.cheat else ''}{terrain}_{config.name}"
 
@@ -130,16 +140,30 @@ if __name__ == '__main__':
     else:
         raise NotImplementedError(f"Unknown {config.algo}")
 
+    sched = linear_schedule(2.5e-4)
+    clip_sched = linear_schedule(.2)
+
     model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
-                 use_sde=True,
-                 seed=seed,
-                 device="cuda",
-                 ent_coef=0.005,
-                 tau=0.01,
-                 learning_starts=10000,
-                 learning_rate="lin_7.3e-4",
-                 policy_kwargs=dict(net_arch=[400, 300])
-                 )
+                n_steps=2048,
+                batch_size=64,
+                gamma=0.99,
+                n_epochs=10,
+                ent_coef=0.001,
+                learning_rate=sched,
+                clip_range=.2
+                )
+
+    # Hardcore BipedalWalker Tuned SAC
+    # model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
+    #              use_sde=True,
+    #              seed=seed,
+    #              device="cuda",
+    #              ent_coef=0.005,
+    #              tau=0.01,
+    #              learning_starts=10000,
+    #              learning_rate=sched,
+    #              policy_kwargs=dict(net_arch=[400, 300])
+    #              )
 
     if config.checkpoint:
         print("Starting from checkpoint", config.checkpoint)
@@ -150,9 +174,6 @@ if __name__ == '__main__':
     callback = SaveOnBestTrainingRewardCallback(monitor=env, check_freq=1000, log_dir=log_dir)
     model.learn(total_timesteps=steps, log_interval=10, tb_log_name=name, callback=callback)
     model.save(name)
-
-
-
 
     # num_cpu = 4  # 80% gpu usage expected
     # l = []
