@@ -5,6 +5,8 @@ import stable_baselines3
 from stable_baselines3 import SAC, PPO
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
+import torch
 
 from envs import *
 
@@ -39,15 +41,16 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         if self.n_calls % self.check_freq == 0:
 
             # Retrieve training reward
-            rewards = self.monitor.get_episode_rewards()
+            # rewards = self.monitor.get_episode_rewards()
 
-            if len(rewards) > 0:
-                # Mean training reward over the last 10 episodes
-                mean_reward = np.mean(rewards[-10:])
-                self.logger.record('reward', mean_reward)
-                if self.verbose > 0:
-                    print("Num timesteps: {}".format(self.num_timesteps))
-                    print(f"Best mean reward: {self.best_mean_reward:.2f} - Last episode mean: {mean_reward:.2f}")
+            if True:
+                # if len(rewards) > 0:
+                #     # Mean training reward over the last 10 episodes
+                #     mean_reward = np.mean(rewards[-10:])
+                #     self.logger.record('reward', mean_reward)
+                #     if self.verbose > 0:
+                #         print("Num timesteps: {}".format(self.num_timesteps))
+                #         print(f"Best mean reward: {self.best_mean_reward:.2f} - Last episode mean: {mean_reward:.2f}")
 
                 # Log last 100 steps average speed and checkpoints
                 avg_speed = np.mean(list(map(lambda x: x["avg_speed"], self.model.ep_info_buffer)))
@@ -56,13 +59,13 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                 self.logger.record('avg_speed', avg_speed)
                 self.logger.record('avg_checkpoints', avg_checkpoints)
 
-                # New best model, you could save the agent here
-                if mean_reward > self.best_mean_reward:
-                    self.best_mean_reward = mean_reward
-                    # Example for saving best model
-                    if self.verbose > 0:
-                        print("Saving new best model to {}".format(self.save_path))
-                    self.model.save(self.save_path)
+                # # New best model, you could save the agent here
+                # if mean_reward > self.best_mean_reward:
+                #     self.best_mean_reward = mean_reward
+                #     # Example for saving best model
+                #     if self.verbose > 0:
+                #         print("Saving new best model to {}".format(self.save_path))
+                #     self.model.save(self.save_path)
 
         return True
 
@@ -143,31 +146,36 @@ if __name__ == '__main__':
     sched = linear_schedule(2.5e-4)
     clip_sched = linear_schedule(.2)
 
-    model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
-                n_steps=2048,
-                batch_size=64,
-                gamma=0.99,
-                n_epochs=10,
-                ent_coef=0.001,
-                learning_rate=sched,
-                clip_range=.2
-                )
+    # Hardcore BipedalWalker Tuned PPO
+    # model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
+    #             n_steps=2048,
+    #             batch_size=64,
+    #             gamma=0.99,
+    #             n_epochs=10,
+    #             ent_coef=0.001,
+    #             learning_rate=sched,
+    #             clip_range=.2
+    #             )
 
     # Hardcore BipedalWalker Tuned SAC
-    # model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
-    #              use_sde=True,
-    #              seed=seed,
-    #              device="cuda",
-    #              ent_coef=0.005,
-    #              tau=0.01,
-    #              learning_starts=10000,
-    #              learning_rate=sched,
-    #              policy_kwargs=dict(net_arch=[400, 300])
-    #              )
+    model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
+                 # use_sde=True,
+                 seed=seed,
+                 device="cuda",
+                 ent_coef=0.005,
+                 tau=0.01,
+                 learning_starts=10000,
+                 learning_rate=sched,
+                 policy_kwargs=dict(net_arch=[400, 300])
+                 )
+
+
 
     if config.checkpoint:
-        print("Starting from checkpoint", config.checkpoint)
-        model.load(config.checkpoint)
+        # print("Starting from checkpoint", config.checkpoint)
+        # model.load(config.checkpoint)
+        model.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
+        print("Loaded model weights")
 
     steps = 10_000_000 if WORKSTATION else 200_000
 

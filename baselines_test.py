@@ -4,19 +4,68 @@
 import time
 
 from stable_baselines3 import SAC, PPO
-from envs import *
+# from envs import *
 import gym
+import numpy as np
+from gym.envs import box2d
 
-model_path = "models/ws4/sac_BipedalWalkerEnv_hardcore_baseline2/best_model.zip"
-model = SAC.load(model_path)
+import torch
+
+
+
 
 
 experiment_conf = {"render": True,
                    "terrain": "flat",
-                   "cheat": "cheat" in model_path,
+                   # "cheat": "cheat" in model_path,
+                   "cheat": True,
                    "perturb_magnitude": 1,
                    "hardcore": True,
                    "desc": ""}
+
+
+
+class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
+
+    def __init__(self, config):
+        self.velocities = []
+        self.do_render = config.get("render", False)
+        self.cheat = config.get("cheat", False)
+        super().__init__()
+        self.hardcore = config.get("hardcore", False)
+
+        self.time = 0
+
+        # clip lidar for non cheating agent
+        if not self.cheat:
+            high = np.array([np.inf] * 14)
+            self.observation_space = gym.spaces.Box(-high, high, dtype=np.float32)
+
+    def step(self, a):
+        ob, reward, done, info = super().step(a)
+        vel = self.hull.linearVelocity.x
+
+        self.velocities.append(vel)
+
+        info.update(dict(avg_speed=np.mean(self.velocities),
+                         checkpoints=-1))
+
+        if self.do_render:
+            self.render()
+
+        self.time += 1
+        if self.time > 2500:
+            done = True
+
+        # clip lidar for non cheating agent
+        if not self.cheat:
+            ob = ob[:14]
+        return ob, reward, done, info
+
+    def reset(self):
+        self.time = 0
+        self.velocities = []
+        return super().reset()
 
 # env = ANYMalStandupEnv(experiment_conf)
 env = BipedalWalkerEnv(experiment_conf)
@@ -24,6 +73,20 @@ env = BipedalWalkerEnv(experiment_conf)
 # env = HumanoidEnvGym(experiment_conf)
 env.render()
 # env = InvertedPendulumEnvR(experiment_conf)
+
+
+
+# model_path = "models/baselines/BipedalWalkerHardcore-v3-COPY.zip"
+# model = SAC.load(model_path)
+
+# torch.save(model.policy.state_dict(), "models/baselines/BipedalWalkerHardcore-statedict.th")
+
+model = SAC("MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300]))
+model.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
+
+
+
+
 
 
 scores = []
