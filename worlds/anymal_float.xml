@@ -1,7 +1,7 @@
 <mujoco model="anymal">
     <compiler angle="radian" meshdir="/home/thomas/uva/scriptie/walking/ant/worlds/anymal/meshes/" />
     <default>
-        <joint damping='1' armature='1'/>
+        <joint damping='2' armature='1'/>
     </default>
 
     <size njmax="500" nconmax="200" />
@@ -27,7 +27,7 @@
             <site name="rangefinder_torso" type="sphere" pos="0 0 -0.1" size="0.015" euler="180 0 0" rgba="0 0 1 .7"/>
 
             <inertial pos="0 0 0.0644886" quat="0 0.707107 0 0.707107" mass="39.6938" diaginertia="1.31111 1.29715 0.494963" />
-<!--            <joint name="root" type="free" margin="0.01" />-->
+            <joint name="root" type="free" margin="0.01" />
             <geom size="0.2655 0.135 0.12" pos="0 0 0.08" type="box" rgba="0.7 0.7 0.7 1" />
             <geom size="0.05 0.05" pos="0.227 0.116 0" quat="0.707107 0 0.707107 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
             <geom size="0.05 0.05" pos="0.227 -0.116 0" quat="0.707107 0 0.707107 0" type="cylinder" rgba="0.7 0.7 0.7 1" />
@@ -148,7 +148,7 @@
     <actuator>
         <general joint="LF_HAA" ctrllimited="true" ctrlrange="-1 1" gear="75" />
         <general joint="LF_HFE" ctrllimited="true" ctrlrange="-1 1" gear="75" />
-        <general joint="LF_KFE" ctrllimited="true" ctrlrange="-1 1" gear="75" />
+        <general joint="LF_KFE" ctrllimited="true" ctrlrange="-1 1" gear="75"/>
         <general joint="RF_HAA" ctrllimited="true" ctrlrange="-1 1" gear="75" />
         <general joint="RF_HFE" ctrllimited="true" ctrlrange="-1 1" gear="75" />
         <general joint="RF_KFE" ctrllimited="true" ctrlrange="-1 1" gear="75" />
@@ -159,6 +159,21 @@
         <general joint="RH_HFE" ctrllimited="true" ctrlrange="-1 1" gear="75" />
         <general joint="RH_KFE" ctrllimited="true" ctrlrange="-1 1" gear="75" />
     </actuator>
+
+<!--    <actuator>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="LF_HAA" gear="75"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="LF_HFE" gear="30"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="LF_KFE" gear="10"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="RF_HAA" gear="75"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="RF_HFE" gear="30"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="RF_KFE" gear="10"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="LH_HAA" gear="75"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="LH_HFE" gear="30"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="LH_KFE" gear="10"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="RH_HAA" gear="75"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="RH_HFE" gear="30"/>-->
+<!--        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="RH_KFE" gear="10"/>-->
+<!--    </actuator>-->
 
 <!--        <actuator>-->
     <!--        <position joint="LF_HAA" ctrllimited="false" ctrlrange="-1 1" gear="1" kp="50" />-->

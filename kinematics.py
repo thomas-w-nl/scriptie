@@ -44,8 +44,7 @@ for i in range(100):
 
         a = env.foot_trajectory()
         action[0:3] = a
-        print(action)
-
+        # action[0] = np.sin(i/250)
 
 
         # action, _states = model.predict(obs)

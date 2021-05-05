@@ -126,35 +126,49 @@ class ANYMalStandupEnv(BaseExperimentEnv):
         return x
 
 
-
 class ANYMalFloatEnv(BaseExperimentEnv):
     def __init__(self, config):
         config["model_file"] = "anymal_float.xml"
         self.start_height = 1
 
-
         config["model_start_height"] = self.start_height
 
         super().__init__(config)
 
-
     def foot_trajectory(self):
-        jacp_LF = self.data.get_body_jacp("LF_FOOT").reshape(3, 12).T[:3]
+        # in case of floating body
+        # jacp = self.data.get_body_jacp("LF_FOOT").reshape(3, 12)
 
-        print()
+        # nu = 12
+        # nv = 18
 
-        target = [[.01],
+        # Strip off root joint degrees of freedom (pos, rot) which is not actuated
+        jacp = self.data.get_body_jacp("LF_FOOT").reshape(3, 18)[:, 6:]
+        print("jacp")
+        print(jacp)
+        jacp_LF = jacp[:, :3]
+        # print(jacp_LF)
+
+        # self.data.xfrc_applied[0, :3] = self.data.qfrc_bias[:3]
+        self.sim.data.qpos[:7] = [0, 0, 2, 0, 0, 0, 0]
+        self.sim.data.qvel[:3] = [0, 0, 0]
+
+        # print("jacp:")
+        # print(self.data.get_body_jacp("LF_FOOT").reshape(3, 12)[:, :3])
+
+        target = [[1],
                   [0],
-                  [.03]]
+                  [0]]
 
-        action = np.dot(np.linalg.inv(jacp_LF.T), target)
-        return action.T
+        action = np.linalg.inv(jacp_LF).dot(target).ravel()
+        print("Action", action)
 
+        # action[2] *= .05
 
+        return action.clip(-1,1) * .2
 
     def step(self, a):
         ob, reward, done, info = super().step(a)
-
 
         reward = zpos = self.get_body_com("torso")[2]
 
@@ -186,10 +200,6 @@ class ANYMalFloatEnv(BaseExperimentEnv):
     def reset(self):
         x = super().reset()
         return x
-
-
-
-
 
 
 class OLD_ANYmalEnv(ANYMalStandupEnv):
