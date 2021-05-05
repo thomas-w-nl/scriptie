@@ -40,10 +40,18 @@ for i in range(100):
     obs = env.reset()
     score = 0
     for i in range(2000):
+        action = env.action_space.sample() * 0
+
+        a = env.foot_trajectory()
+        action[0:3] = a
+        print(action)
+
+
+
         # action, _states = model.predict(obs)
         # print(action)
         # action = np.array([np.sin(i/50)] * 12)
-        action = env.action_space.sample() * 0
+
         obs, reward, done, info = env.step(action)
         # print()
         # print("direction_reward", info["direction_reward"])

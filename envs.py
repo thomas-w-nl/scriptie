@@ -137,10 +137,24 @@ class ANYMalFloatEnv(BaseExperimentEnv):
 
         super().__init__(config)
 
+
+    def foot_trajectory(self):
+        jacp_LF = self.data.get_body_jacp("LF_FOOT").reshape(3, 12).T[:3]
+
+        print()
+
+        target = [[.01],
+                  [0],
+                  [.03]]
+
+        action = np.dot(np.linalg.inv(jacp_LF.T), target)
+        return action.T
+
+
+
     def step(self, a):
         ob, reward, done, info = super().step(a)
 
-        print(self.data.get_body_jacp("LF_FOOT").reshape(12, 3))
 
         reward = zpos = self.get_body_com("torso")[2]
 

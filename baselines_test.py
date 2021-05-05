@@ -11,18 +11,7 @@ from gym.envs import box2d
 
 import torch
 
-
-
-
-
-experiment_conf = {"render": True,
-                   "terrain": "flat",
-                   # "cheat": "cheat" in model_path,
-                   "cheat": True,
-                   "perturb_magnitude": 1,
-                   "hardcore": True,
-                   "desc": ""}
-
+from envs import HumanoidEnv, ANYMalStandupEnv
 
 
 class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
@@ -67,8 +56,19 @@ class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
         self.velocities = []
         return super().reset()
 
-# env = ANYMalStandupEnv(experiment_conf)
-env = BipedalWalkerEnv(experiment_conf)
+model_path = "models/sac_ANYMalStandupEnv_flat_baseline0/best_model.zip"
+
+
+experiment_conf = {"render": True,
+                   "terrain": "flat",
+                   # "cheat": "cheat" in model_path,
+                   "cheat": False,
+                   "perturb_magnitude": 1,
+                   "hardcore": True,
+                   "desc": ""}
+
+env = ANYMalStandupEnv(experiment_conf)
+# env = BipedalWalkerEnv(experiment_conf)
 # env = HumanoidEnv(experiment_conf)
 # env = HumanoidEnvGym(experiment_conf)
 env.render()
@@ -76,13 +76,12 @@ env.render()
 
 
 
-# model_path = "models/baselines/BipedalWalkerHardcore-v3-COPY.zip"
-# model = SAC.load(model_path)
+model = SAC.load(model_path)
 
 # torch.save(model.policy.state_dict(), "models/baselines/BipedalWalkerHardcore-statedict.th")
 
-model = SAC("MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300]))
-model.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
+# model = SAC("MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300]))
+# model.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
 
 
 

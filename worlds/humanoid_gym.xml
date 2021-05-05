@@ -33,6 +33,8 @@
         <body name="torso" pos="0 0 {{START_HEIGHT}}">
             <camera name="track" mode="trackcom" pos="0 -4 0" xyaxes="1 0 0 0 0 1"/>
             <joint armature="0" damping="0" limited="false" name="root" pos="0 0 0" stiffness="0" type="free"/>
+            <site name="torso_site" type="sphere" pos="0 0 0" size="0.03" euler="0 0 0" rgba="0 0 1 .7"/>
+
             <geom fromto="0 -.07 0 0 .07 0" name="torso1" size="0.07" type="capsule"/>
             <geom name="head" pos="0 0 .19" size=".09" type="sphere" user="258"/>
             <geom fromto="-.01 -.06 -.12 -.01 .06 -.12" name="uwaist" size="0.06" type="capsule"/>
@@ -124,4 +126,11 @@
         <motor gear="25" joint="left_shoulder2" name="left_shoulder2"/>
         <motor gear="25" joint="left_elbow" name="left_elbow"/>
     </actuator>
+
+    <sensor>
+        <velocimeter name="sensor_velocimeter" site="torso_site"/>
+        <gyro name="sensor_gyro" site="torso_site"/>
+        <accelerometer name="sensor_accel" site="torso_site"/>
+    </sensor>
+
 </mujoco>

@@ -41,16 +41,15 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         if self.n_calls % self.check_freq == 0:
 
             # Retrieve training reward
-            # rewards = self.monitor.get_episode_rewards()
+            rewards = self.monitor.get_episode_rewards()
 
-            if True:
-                # if len(rewards) > 0:
-                #     # Mean training reward over the last 10 episodes
-                #     mean_reward = np.mean(rewards[-10:])
-                #     self.logger.record('reward', mean_reward)
-                #     if self.verbose > 0:
-                #         print("Num timesteps: {}".format(self.num_timesteps))
-                #         print(f"Best mean reward: {self.best_mean_reward:.2f} - Last episode mean: {mean_reward:.2f}")
+            if len(rewards) > 0:
+                # Mean training reward over the last 10 episodes
+                mean_reward = np.mean(rewards[-10:])
+                self.logger.record('reward', mean_reward)
+                if self.verbose > 0:
+                    print("Num timesteps: {}".format(self.num_timesteps))
+                    print(f"Best mean reward: {self.best_mean_reward:.2f} - Last episode mean: {mean_reward:.2f}")
 
                 # Log last 100 steps average speed and checkpoints
                 avg_speed = np.mean(list(map(lambda x: x["avg_speed"], self.model.ep_info_buffer)))
@@ -59,13 +58,13 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                 self.logger.record('avg_speed', avg_speed)
                 self.logger.record('avg_checkpoints', avg_checkpoints)
 
-                # # New best model, you could save the agent here
-                # if mean_reward > self.best_mean_reward:
-                #     self.best_mean_reward = mean_reward
-                #     # Example for saving best model
-                #     if self.verbose > 0:
-                #         print("Saving new best model to {}".format(self.save_path))
-                #     self.model.save(self.save_path)
+                # New best model, you could save the agent here
+                if mean_reward > self.best_mean_reward:
+                    self.best_mean_reward = mean_reward
+                    # Example for saving best model
+                    if self.verbose > 0:
+                        print("Saving new best model to {}".format(self.save_path))
+                    self.model.save(self.save_path)
 
         return True
 
