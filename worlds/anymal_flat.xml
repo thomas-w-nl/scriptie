@@ -3,6 +3,7 @@
     <size njmax="500" nconmax="200" />
         <default>
         <joint damping='.3' armature='.5'/>
+
     </default>
     <asset>
         <texture type="skybox" builtin="gradient" rgb1="1 1 1" rgb2="0 0 0" width="100" height="600" />
