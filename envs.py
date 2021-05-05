@@ -3,6 +3,7 @@
 ###
 
 import gym.envs.box2d as box2d
+from gym.envs.mujoco import AntEnv
 
 from base_envs import *
 
@@ -63,9 +64,6 @@ class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
         return super().reset()
 
 
-
-
-
 class ANYMalStandupEnv(BaseExperimentEnv):
     def __init__(self, config):
         # config["model_file"] = "anymal.xml"
@@ -73,6 +71,8 @@ class ANYMalStandupEnv(BaseExperimentEnv):
 
         config["model_file"] = "anymal_flat.xml"
         self.start_height = .13
+
+        self.config = config
 
         # config["model_file"] = "anymal_servo.xml"
         # self.start_height = .6
@@ -82,7 +82,6 @@ class ANYMalStandupEnv(BaseExperimentEnv):
 
         super().__init__(config)
 
-
     def step(self, a):
         ob, reward, done, info = super().step(a)
 
@@ -91,7 +90,64 @@ class ANYMalStandupEnv(BaseExperimentEnv):
         # Too tilted over
         xmat = self.data.get_body_xmat("torso")
         # print(xmat[-1, -1])
-        if xmat[-1, -1] < .5:
+        if xmat[-1, -1] < -.1:
+            print("tilt")
+            done = True
+            reward = -10
+            return ob, reward, done, info
+
+        # Too low
+        # if zpos < .1:
+        #     print("height")
+        #     done = True
+        #     reward = -50
+        #     return ob, reward, done, info
+
+        # reward rescale
+        reward *= 30
+
+        return ob, reward, done, info
+
+    def get_height_above_ground(self):
+        return self.data.sensordata[9]
+
+    def compute_reward(self, action):
+        zpos = self.get_body_com("torso")[2]
+        return zpos, dict()
+
+    def reset(self):
+        x = super().reset()
+        if "flat" in self.config["model_file"]:
+            qpos_init = np.array(
+                [1.57135e-06, -3.20295e-06, self.start_height, 1, 3.78503e-06, -1.6587e-07, 3.16825e-06, 1.16648,
+                 -0.000206107, -0.036613, -1.16587, -0.000139531, -0.0445421, 1.16624, 0.000126223, 0.0397481, -1.16597,
+                 0.000204427, 0.0432443])
+            self.sim.data.qpos[:] = qpos_init
+        return x
+
+
+
+class ANYMalFloatEnv(BaseExperimentEnv):
+    def __init__(self, config):
+        config["model_file"] = "anymal_float.xml"
+        self.start_height = 1
+
+
+        config["model_start_height"] = self.start_height
+
+        super().__init__(config)
+
+    def step(self, a):
+        ob, reward, done, info = super().step(a)
+
+        print(self.data.get_body_jacp("LF_FOOT").reshape(12, 3))
+
+        reward = zpos = self.get_body_com("torso")[2]
+
+        # Too tilted over
+        xmat = self.data.get_body_xmat("torso")
+        # print(xmat[-1, -1])
+        if xmat[-1, -1] < -.1:
             print("tilt")
             done = True
             reward = -50
@@ -109,29 +165,42 @@ class ANYMalStandupEnv(BaseExperimentEnv):
 
         return ob, reward, done, info
 
-    def get_height_above_ground(self):
-        return self.data.sensordata[9]
-
     def compute_reward(self, action):
         zpos = self.get_body_com("torso")[2]
         return zpos, dict()
 
     def reset(self):
         x = super().reset()
-        qpos_init = np.array(
-            [1.57135e-06, -3.20295e-06, self.start_height, 1, 3.78503e-06, -1.6587e-07, 3.16825e-06, 1.16648,
-             -0.000206107, -0.036613, -1.16587, -0.000139531, -0.0445421, 1.16624, 0.000126223, 0.0397481, -1.16597,
-             0.000204427, 0.0432443])
-        self.sim.data.qpos[:] = qpos_init
         return x
 
 
+
+
+
+
+class OLD_ANYmalEnv(ANYMalStandupEnv):
+    def _get_obs(self):
+        target_vec = self.get_target_vector()
+        body_vec = self.get_body_vector()
+
+        # global z pos of torso is also stripped
+        # Maybe include torso range sensor
+        return np.concatenate([
+            self.sim.data.qpos.flat[3:],
+            self.sim.data.qvel.flat,
+            np.clip(self.sim.data.cfrc_ext, -1, 1).flat,
+            body_vec,
+            target_vec,
+        ])
+
+
 import socket
+
 hostname = socket.gethostname()
 if hostname != "robolabws4":
     from gym.envs.mujoco import *
     from gym.envs.mujoco.humanoid import mass_center
-    from gym.envs.mujoco import HumanoidEnv as HumanoidEnvORIGINAL
+    from gym.envs.mujoco import HumanoidEnv as HumanoidEnvORIGINAL, AntEnv
 
 
     class HumanoidEnv(BaseExperimentEnv):
@@ -176,7 +245,6 @@ if hostname != "robolabws4":
             return obs, reward, done, info
 
 
-
     ########################### TODO REWORK
     #
     #
@@ -216,7 +284,6 @@ if hostname != "robolabws4":
     #             done = True
     #
     #         return ob, reward, done, info
-
 
     class AntEnv(BaseExperimentEnv):
         def __init__(self, config):
@@ -377,7 +444,6 @@ if hostname != "robolabws4":
             return reward, reward_info
 
 
-
     class ANYMalRandomForceEnv(RandomForceEnv):
         def __init__(self, config):
             config["model_file"] = "anymal.xml"
@@ -470,8 +536,6 @@ if hostname != "robolabws4":
             return obs, reward, done, info
 
 
-
-
     class HumanoidEnvGym(HumanoidEnvORIGINAL):
 
         def __init__(self, config):
@@ -508,4 +572,3 @@ if hostname != "robolabws4":
         def reset(self):
             self.velocities = []
             return super().reset()
-
