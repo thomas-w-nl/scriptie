@@ -1,7 +1,7 @@
 <mujoco model="anymal">
     <compiler angle="radian" meshdir="/home/thomas/uva/scriptie/walking/ant/worlds/anymal/meshes/" />
     <default>
-        <joint damping='.3' armature='.5'/>
+        <joint damping='1' armature='1'/>
     </default>
 
     <size njmax="500" nconmax="200" />
