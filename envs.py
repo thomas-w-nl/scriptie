@@ -156,9 +156,9 @@ class ANYMalFloatEnv(BaseExperimentEnv):
         # print("jacp:")
         # print(self.data.get_body_jacp("LF_FOOT").reshape(3, 12)[:, :3])
 
-        target = [[1],
+        target = [[0],
                   [0],
-                  [0]]
+                  [1]]
 
         action = np.linalg.inv(jacp_LF).dot(target).ravel()
         print("Action", action)
@@ -352,6 +352,71 @@ if hostname != "robolabws4":
             return cheat_ob
 
 
+    class CheetaEnv(BaseExperimentEnv):
+        def __init__(self, config):
+            config["model_file"] = "cheeta.xml"
+            config["model_start_height"] = .7
+            super().__init__(config)
+
+        def step(self, a):
+            ob, reward, done, info = super().step(a)
+
+            # Too tilted over
+            xmat = self.data.get_body_xmat("torso")
+            # print(xmat[-1, -1])
+            if xmat[-1, -1] < .5:
+                print("tilt")
+                done = True
+                reward = -50
+                return ob, reward, done, info
+
+            # Too low
+            zpos = self.get_body_com("torso")[2]
+            if zpos < .1:
+                print("height")
+                done = True
+                reward = -50
+                return ob, reward, done, info
+
+            return ob, reward, done, info
+
+
+        def compute_reward(self, action):
+            vel_vec = self.get_velocity()
+
+            reached = self.update_target()
+
+            target_reached_reward = 1000 if reached else 0
+
+            target_vec = self.get_target_vector()
+            body_vec = self.get_body_vector()
+
+            dir = np.dot(target_vec[:2], body_vec[:2])
+
+            direction_reward = dir
+
+            speed_reward = vel_vec[0] * 5
+
+            ctrl_cost = .1 * np.square(action).sum()
+            contact_cost = .5e-6 * np.sum(
+                np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+
+            # height = self.get_body_com("torso")[2]
+
+
+            survive_reward = 5
+            reward = speed_reward - ctrl_cost - contact_cost + survive_reward + target_reached_reward
+
+            reward_info = dict(
+                speed_reward=speed_reward,
+                direction_reward=direction_reward,
+                reward_ctrl=-ctrl_cost,
+                reward_contact=-contact_cost,
+                reward_survive=survive_reward)
+
+            return reward, reward_info
+
+
     class ANYMalEnv(BaseExperimentEnv):
         def __init__(self, config):
             config["model_file"] = "anymal.xml"
@@ -360,6 +425,11 @@ if hostname != "robolabws4":
 
         def step(self, a):
             ob, reward, done, info = super().step(a)
+
+            vel_vec = self.get_velocity()
+
+
+            reward = speed_reward = vel_vec[0] * 2
 
             # Too tilted over
             xmat = self.data.get_body_xmat("torso")

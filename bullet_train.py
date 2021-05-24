@@ -74,7 +74,8 @@ if __name__ == '__main__':
                        "desc": config.name,
                        }
 
-    env = ExtendedMinitaurBulletEnv(render=True)
+
+    env = ExtendedMinitaurBulletEnv(render=render)
 
 
     # env = HumanoidEnv(experiment_conf)

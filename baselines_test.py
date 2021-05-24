@@ -56,19 +56,19 @@ class BipedalWalkerEnv(gym.envs.box2d.BipedalWalker):
         self.velocities = []
         return super().reset()
 
-model_path = "models/sac_ANYMalStandupEnv_flat_baseline0/best_model.zip"
+model_path = "pretrained/BipedalWalkerHardcore_pretrained.zip"
 
 
 experiment_conf = {"render": True,
                    "terrain": "flat",
                    # "cheat": "cheat" in model_path,
-                   "cheat": False,
+                   "cheat": True,
                    "perturb_magnitude": 1,
                    "hardcore": True,
                    "desc": ""}
 
-env = ANYMalStandupEnv(experiment_conf)
-# env = BipedalWalkerEnv(experiment_conf)
+# env = ANYMalStandupEnv(experiment_conf)
+env = BipedalWalkerEnv(experiment_conf)
 # env = HumanoidEnv(experiment_conf)
 # env = HumanoidEnvGym(experiment_conf)
 env.render()
