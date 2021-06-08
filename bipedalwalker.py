@@ -14,34 +14,35 @@ from bipedal_walker_env import BipedalWalkerEnvMedium
 
 WORKSTATION = not os.getlogin() == "thomas"
 
-name = "sac_BipedalWalkerMedium_stacked5_nolidar2"
+for i in range(5):
+    name = f"EVAL_BipedalWalkerMedium_nostack{i}"
 
-env = BipedalWalkerEnvMedium({"render": not WORKSTATION,
-                              "hardcore": True,
-                              "cheat": False})
-# env = LunarLanderContinuous()
-env = Monitor(env)
+    env = BipedalWalkerEnvMedium({"render": not WORKSTATION,
+                                  "hardcore": True,
+                                  "cheat": False})
+    # env = LunarLanderContinuous()
+    env = Monitor(env)
 
-env = DummyVecEnv([lambda: env])
-env = VecFrameStack(env, n_stack=5)
-
-
-model = SAC('MlpPolicy', env, verbose=1, tensorboard_log="./logs/all/",
-            policy_kwargs=dict(net_arch=[400, 300]),
-            learning_rate=7.3e-4,
-            train_freq=1,
-            gradient_steps=1,
-            learning_starts=10000,
-            use_sde=True,
-            )
-
-# model = SAC.load("out/sac_BipedalWalkerMedium_baseline1_fresh.zip")
-# model.set_env(env)
-# model.gradient_steps = 1
-# model.train_freq = 1
-# model.learning_starts = 0
-# model.learning_rate = linear_schedule(0.0001)
+    env = DummyVecEnv([lambda: env])
+    # env = VecFrameStack(env, n_stack=10)
 
 
-model.learn(total_timesteps=5_000_000, tb_log_name=name)
-model.save(f"out/{name}.zip")
+    model = SAC('MlpPolicy', env, verbose=1, tensorboard_log="./logs/all/",
+                policy_kwargs=dict(net_arch=[400, 300]),
+                learning_rate=7.3e-4,
+                train_freq=1,
+                gradient_steps=1,
+                learning_starts=10000,
+                use_sde=True,
+                )
+
+    # model = SAC.load("out/sac_BipedalWalkerMedium_baseline1_fresh.zip")
+    # model.set_env(env)
+    # model.gradient_steps = 1
+    # model.train_freq = 1
+    # model.learning_starts = 0
+    # model.learning_rate = linear_schedule(0.0001)
+
+
+    model.learn(total_timesteps=2_000_000, tb_log_name=name)
+    model.save(f"out/{name}.zip")

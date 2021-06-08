@@ -510,6 +510,7 @@ class BipedalWalkerEnvMedium(BipedalWalker):
         self.do_render = config.get("render", False)
         self.cheat = config.get("cheat", False)
         self.hardcore = config.get("hardcore", False)
+        self.history_len = config.get("history_len", False)
         super().__init__()
 
         self.time = 0
@@ -517,6 +518,8 @@ class BipedalWalkerEnvMedium(BipedalWalker):
         # clip lidar for non cheating agent
         if not self.cheat:
             high = np.array([np.inf] * 14)
+            if self.history_len:
+                high = np.full((self.history_len, 14), np.inf)
             self.observation_space = gym.spaces.Box(-high, high, dtype=np.float32)
 
     def step(self, a):
