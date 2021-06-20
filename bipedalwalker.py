@@ -36,12 +36,12 @@ for i in range(5):
                 use_sde=True,
                 )
 
-    # model = SAC.load("out/sac_BipedalWalkerMedium_baseline1_fresh.zip")
-    # model.set_env(env)
-    # model.gradient_steps = 1
-    # model.train_freq = 1
-    # model.learning_starts = 0
-    # model.learning_rate = linear_schedule(0.0001)
+    # model_teacher = SAC.load("out/sac_BipedalWalkerMedium_baseline1_fresh.zip")
+    # model_teacher.set_env(env)
+    # model_teacher.gradient_steps = 1
+    # model_teacher.train_freq = 1
+    # model_teacher.learning_starts = 0
+    # model_teacher.learning_rate = linear_schedule(0.0001)
 
 
     model.learn(total_timesteps=2_000_000, tb_log_name=name)

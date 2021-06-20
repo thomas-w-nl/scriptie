@@ -23,7 +23,7 @@ env = DummyVecEnv([lambda:env])
 # env = VecFrameStack(env, n_stack=3)
 
 
-# model = PPO("MlpPolicy", env)
+# model_teacher = PPO("MlpPolicy", env)
 model = SAC.load("out/sac_BipedalWalkerMedium_baseline1_fresh.zip")
 model.set_env(env)
 

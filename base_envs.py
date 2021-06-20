@@ -145,7 +145,7 @@ class TerrainEnv(MujocoEnvFromString):
         # data = np.array(data).ravel()
         # data = np.interp(data, (data.min(), data.max()), (0, 1))  # rescale to proper input range [0, 1] for hfield
         # assert data.min() >= 0 and data.max() <= 1
-        # self.sim.model.hfield_data[:] = data
+        # self.sim.model_teacher.hfield_data[:] = data
 
     def clear_patch(self, hfield):
         ''' Clears a patch shaped like box, assuming robot is placed in center of hfield

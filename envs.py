@@ -78,7 +78,7 @@ class ANYMalStandupEnv(BaseExperimentEnv):
         # self.start_height = .6
 
         config["model_start_height"] = self.start_height
-        # self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.model.nu,), dtype=np.float32)
+        # self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.model_teacher.nu,), dtype=np.float32)
 
         super().__init__(config)
 

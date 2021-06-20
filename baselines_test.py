@@ -78,10 +78,10 @@ env.render()
 
 model = SAC.load(model_path)
 
-# torch.save(model.policy.state_dict(), "models/baselines/BipedalWalkerHardcore-statedict.th")
+# torch.save(model_teacher.policy.state_dict(), "models/baselines/BipedalWalkerHardcore-statedict.th")
 
-# model = SAC("MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300]))
-# model.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
+# model_teacher = SAC("MlpPolicy", env, policy_kwargs=dict(net_arch=[400, 300]))
+# model_teacher.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
 
 
 

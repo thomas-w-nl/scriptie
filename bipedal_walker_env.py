@@ -528,8 +528,10 @@ class BipedalWalkerEnvMedium(BipedalWalker):
 
         self.velocities.append(vel)
 
-        info.update(dict(avg_speed=np.mean(self.velocities),
+        info.update(dict(avg_speed=np.mean(self.velocities[-30:]),
                          checkpoints=-1))
+
+        # print("avg speed", info["avg_speed"])
 
         if self.do_render:
             self.render()
@@ -537,6 +539,12 @@ class BipedalWalkerEnvMedium(BipedalWalker):
         self.time += 1
         if self.time > 2500:
             done = True
+
+        # kill if stuck
+        if self.time > 200 and info["avg_speed"] < .5:
+            print("Stuck kill")
+            done = True
+
 
         # clip lidar for non cheating agent
         if not self.cheat:

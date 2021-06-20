@@ -112,7 +112,7 @@ if __name__ == '__main__':
     clip_sched = linear_schedule(.2)
 
     # Hardcore BipedalWalker Tuned PPO
-    # model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
+    # model_teacher = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
     #             n_steps=2048,
     #             batch_size=64,
     #             gamma=0.99,

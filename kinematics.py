@@ -47,7 +47,7 @@ for i in range(100):
         # action[0] = np.sin(i/250)
 
 
-        # action, _states = model.predict(obs)
+        # action, _states = model_teacher.predict(obs)
         # print(action)
         # action = np.array([np.sin(i/50)] * 12)
 

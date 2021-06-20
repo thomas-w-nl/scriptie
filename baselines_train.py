@@ -13,11 +13,11 @@ from envs import *
 
 class SaveOnBestTrainingRewardCallback(BaseCallback):
     """
-    Callback for saving a model (the check is done every ``check_freq`` steps)
+    Callback for saving a model_teacher (the check is done every ``check_freq`` steps)
     based on the training reward (in practice, we recommend using ``EvalCallback``).
 
     :param check_freq: (int)
-    :param log_dir: (str) Path to the folder where the model will be saved.
+    :param log_dir: (str) Path to the folder where the model_teacher will be saved.
       It must contains the name created by the ``Monitor`` wrapper.
     :param verbose: (int)
     """
@@ -59,13 +59,13 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                 self.logger.record('avg_speed', avg_speed)
                 self.logger.record('avg_checkpoints', avg_checkpoints)
 
-                # # New best model, you could save the agent here
+                # # New best model_teacher, you could save the agent here
                 # if mean_reward > self.best_mean_reward:
                 #     self.best_mean_reward = mean_reward
-                #     # Example for saving best model
+                #     # Example for saving best model_teacher
                 #     if self.verbose > 0:
-                #         print("Saving new best model to {}".format(self.save_path))
-                #     self.model.save(self.save_path)
+                #         print("Saving new best model_teacher to {}".format(self.save_path))
+                #     self.model_teacher.save(self.save_path)
 
         return True
 
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     clip_sched = linear_schedule(.2)
 
     # Hardcore BipedalWalker Tuned PPO
-    # model = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
+    # model_teacher = Algo("MlpPolicy", env, verbose=1, tensorboard_log="./logs/all/",
     #             n_steps=2048,
     #             batch_size=64,
     #             gamma=0.99,
@@ -173,9 +173,9 @@ if __name__ == '__main__':
 
     if config.checkpoint:
         # print("Starting from checkpoint", config.checkpoint)
-        # model.load(config.checkpoint)
+        # model_teacher.load(config.checkpoint)
         model.policy.load_state_dict(torch.load("BipedalWalkerHardcore-statedict.th"))
-        print("Loaded model weights")
+        print("Loaded model_teacher weights")
 
     steps = 10_000_000 if WORKSTATION else 200_000
 
